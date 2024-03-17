@@ -3,6 +3,7 @@ import TopBar from "./TopBar";
 import { Box } from "@mui/material";
 import SideBar from "./SideBar";
 import { useSession } from "next-auth/react";
+import SnackBar from "./SnackBar";
 
 interface Prop {
   children?: ReactNode;
@@ -18,6 +19,7 @@ const Layout = ({ children }: Prop) => {
         {data && <SideBar />}
         <Box sx={{ padding: "20px", width: "100%" }}>{children}</Box>
       </Box>
+      <SnackBar />
     </Box>
   );
 };

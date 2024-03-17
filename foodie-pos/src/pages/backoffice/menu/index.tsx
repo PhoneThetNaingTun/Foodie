@@ -1,10 +1,15 @@
 import Layout from "@/components/BackOfficeLayout";
 import NewMenuDialog from "@/components/NewMenuDialog";
+import { NewMenuPayload } from "@/type/menu";
 import { Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
 
 const Menu = () => {
   const [open, setOpen] = useState<boolean>(false);
+  const [newMenu, setNewMenu] = useState<NewMenuPayload>({
+    name: "",
+    price: 0,
+  });
   return (
     <Layout>
       <Box
@@ -28,7 +33,12 @@ const Menu = () => {
           </Button>
         </Box>
       </Box>
-      <NewMenuDialog open={open} setOpen={setOpen} />
+      <NewMenuDialog
+        open={open}
+        setOpen={setOpen}
+        newMenu={newMenu}
+        setNewMenu={setNewMenu}
+      />
     </Layout>
   );
 };

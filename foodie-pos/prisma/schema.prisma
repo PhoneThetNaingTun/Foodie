@@ -13,4 +13,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model menu {
+  id               Int                @id @default(autoincrement())
+  name             String
+  price            Int
+  createdDate      DateTime           @default(now())
+  updatedDate      DateTime           @updatedAt
+  isArchive        Boolean            @default(false)
+  menuMenuCategory menuMenuCategory[]
+}
 
+model menuMenuCategory {
+  id             Int          @id @default(autoincrement())
+  menuId         Int
+  menu           menu         @relation(fields: [menuId], references: [id])
+  menuCategoryId Int
+  menuCategory   menuCategory @relation(fields: [menuCategoryId], references: [id])
+}
+
+model menuCategory {
+  id               Int                @id @default(autoincrement())
+  name             String
+  isAvalibel       Boolean            @default(true)
+  createdDate      DateTime           @default(now())
+  updatedDate      DateTime           @updatedAt
+  isArchive        Boolean            @default(false)
+  menuMenuCategory menuMenuCategory[]
+}
