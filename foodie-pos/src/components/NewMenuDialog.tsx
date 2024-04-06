@@ -6,15 +6,22 @@ import {
   Avatar,
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  InputLabel,
   List,
   ListItem,
   ListItemAvatar,
   ListItemButton,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -29,6 +36,7 @@ interface Prop {
 const NewMenuDialog = ({ open, setOpen, newMenu, setNewMenu }: Prop) => {
   const { isLoading } = useAppSelector((state) => state.Menu);
   const dispatch = useAppDispatch();
+  const { menuCategories } = useAppSelector((state) => state.MenuCategory);
   const handleCreate = async () => {
     const isValid = newMenu.name;
     if (!isValid) return;
@@ -50,6 +58,7 @@ const NewMenuDialog = ({ open, setOpen, newMenu, setNewMenu }: Prop) => {
       })
     );
   };
+
   return (
     <Dialog
       onClose={() => {
@@ -80,7 +89,41 @@ const NewMenuDialog = ({ open, setOpen, newMenu, setNewMenu }: Prop) => {
             onChange={(event) => {
               setNewMenu({ ...newMenu, price: Number(event.target.value) });
             }}
+            sx={{ mb: 3 }}
           />
+          <FormControl sx={{ widdth: "100%" }}>
+            <InputLabel>Menu Categories</InputLabel>
+            <Select
+              input={<OutlinedInput label="Menu Category" />}
+              value={newMenu.menuCategoryId}
+              multiple
+              onChange={(event) => {
+                setNewMenu({
+                  ...newMenu,
+                  menuCategoryId: event.target.value as number[],
+                });
+              }}
+              renderValue={() => {
+                const selectedMenuCategory = newMenu.menuCategoryId.map((id) =>
+                  menuCategories.find((item) => item.id === id)
+                );
+                return selectedMenuCategory
+                  .map((item) => item?.name)
+                  .join(", ");
+              }}
+            >
+              {menuCategories.map((item) => {
+                return (
+                  <MenuItem key={item.id} value={item.id}>
+                    <Checkbox
+                      checked={newMenu.menuCategoryId.includes(item.id)}
+                    />
+                    <ListItemText primary={item.name} />
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
         </Box>
       </DialogContent>
       <DialogActions>

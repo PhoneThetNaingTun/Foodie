@@ -6,7 +6,7 @@ const backOffice = () => {
   const { data, status } = useSession();
   return (
     <Layout>
-      <Typography>Back OFfice{data?.user?.email}</Typography>
+      <Typography>{data?.user?.email}</Typography>
     </Layout>
   );
 };

@@ -15,20 +15,15 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { signOut, useSession } from "next-auth/react";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useState } from "react";
+import { useAppSelector } from "@/store/hooks";
 
 const TopBar = () => {
   const { data } = useSession();
   const [open, setOpen] = useState<boolean>(false);
+  const { selectedLocation } = useAppSelector((state) => state.App);
   return (
     <AppBar position="static" sx={{ backgroundColor: "#40A2E3", height: "8%" }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        {data && (
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Avatar src="data.user?.image" sx={{ mr: "20px" }} />
-            <Typography>{data.user?.name}</Typography>
-          </Box>
-        )}
-
         <Box>
           <Typography
             variant="h6"
@@ -42,6 +37,7 @@ const TopBar = () => {
             Yam Yam
           </Typography>
         </Box>
+        <Typography>{selectedLocation?.name}</Typography>
         {data && (
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Button color="inherit" onClick={() => setOpen(true)}>

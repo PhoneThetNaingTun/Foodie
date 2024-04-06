@@ -1,10 +1,10 @@
 import { config } from "@/config";
-import { Menu, NewMenuPayload } from "@/type/menu";
+import { NewMenuPayload } from "@/type/menu";
+import { menu } from "@prisma/client";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { error } from "console";
 
 interface MenuSlice {
-  menus: Menu[];
+  menus: menu[];
   isLoading: boolean;
   error: string | null;
 }
@@ -17,7 +17,7 @@ const initialState: MenuSlice = {
 
 export const createMenu = createAsyncThunk(
   "menu/createMenu",
-  async (payload: NewMenuPayload) => {
+  async (payload: NewMenuPayload, thuckApi) => {
     const { onSuccess } = payload;
     const response = await fetch(`${config.backOfficeApi}/menu`, {
       method: "POST",
@@ -35,13 +35,13 @@ export const menuSlice = createSlice({
   name: "menu",
   initialState,
   reducers: {
-    setMenu: (state, action: PayloadAction<Menu[]>) => {
+    setMenu: (state, action: PayloadAction<menu[]>) => {
       state.menus = action.payload;
     },
-    addMenu: (state, action: PayloadAction<Menu>) => {
+    addMenu: (state, action: PayloadAction<menu>) => {
       state.menus = [...state.menus, action.payload];
     },
-    deleteMenu: (state, action: PayloadAction<Menu>) => {
+    deleteMenu: (state, action: PayloadAction<menu>) => {
       state.menus = state.menus.filter((menu) => {
         menu.id === action.payload.id ? false : true;
       });

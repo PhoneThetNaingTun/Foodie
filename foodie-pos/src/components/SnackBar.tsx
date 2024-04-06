@@ -9,7 +9,7 @@ const SnackBar = () => {
   useEffect(() => {
     setTimeout(() => {
       dispatch(closeSnackBar());
-    }, 3000);
+    }, 4000);
   }, [message]);
   return (
     <Box>
@@ -35,4 +35,4 @@ const SnackBar = () => {
   );
 };
 
-export default Snackbar;
+export default SnackBar;
