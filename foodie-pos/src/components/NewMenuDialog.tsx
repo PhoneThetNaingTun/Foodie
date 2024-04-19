@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Chip,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -26,6 +27,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import FileDropZone from "./FileDropZone";
+import { uploadAsset } from "@/store/slices/AppSlice";
 
 interface Prop {
   open: boolean;
@@ -35,28 +38,49 @@ interface Prop {
 }
 const NewMenuDialog = ({ open, setOpen, newMenu, setNewMenu }: Prop) => {
   const { isLoading } = useAppSelector((state) => state.Menu);
+  const [imageFile, setImageFile] = useState<File>();
   const dispatch = useAppDispatch();
   const { menuCategories } = useAppSelector((state) => state.MenuCategory);
   const handleCreate = async () => {
     const isValid = newMenu.name;
+    if (!newMenu.menuCategoryId.length) {
+      return dispatch(
+        openSnackBar({
+          type: "error",
+          message: "Must Choose At Least One Menu Category",
+        })
+      );
+    }
     if (!isValid) return;
-    dispatch(
-      createMenu({
-        ...newMenu,
-        onSuccess: () => {
-          dispatch(
-            openSnackBar({
-              type: "success",
-              message: "Menu Created SuccessFully",
-            })
-          );
-          setOpen(false);
-        },
-        onError: () => {
-          dispatch(openSnackBar({ type: "error", message: "Erroe Occured!" }));
-        },
-      })
-    );
+    if (imageFile) {
+      dispatch(
+        uploadAsset({
+          file: imageFile,
+          onSuccess: (assetUrl) => {
+            newMenu.assetUrl = assetUrl;
+            dispatch(
+              createMenu({
+                ...newMenu,
+                onSuccess: () => {
+                  dispatch(
+                    openSnackBar({
+                      type: "success",
+                      message: "Menu Created SuccessFully",
+                    })
+                  );
+                  setOpen(false);
+                },
+                onError: () => {
+                  dispatch(
+                    openSnackBar({ type: "error", message: "Erroe Occured!" })
+                  );
+                },
+              })
+            );
+          },
+        })
+      );
+    }
   };
 
   return (
@@ -124,6 +148,14 @@ const NewMenuDialog = ({ open, setOpen, newMenu, setNewMenu }: Prop) => {
               })}
             </Select>
           </FormControl>
+          <FileDropZone onDrop={(files) => setImageFile(files[0])} />
+          {imageFile && (
+            <Chip
+              sx={{ mt: 2 }}
+              label={imageFile.name}
+              onDelete={() => setImageFile(undefined)}
+            />
+          )}
         </Box>
       </DialogContent>
       <DialogActions>

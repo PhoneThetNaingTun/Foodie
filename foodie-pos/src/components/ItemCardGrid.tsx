@@ -9,6 +9,7 @@ interface Prop {
   isAvailable?: boolean;
   subTitle?: string;
   price?: number;
+  image?: string | null;
 }
 
 const ItemCardGrid = ({
@@ -18,6 +19,7 @@ const ItemCardGrid = ({
   href,
   isAvailable,
   subTitle,
+  image,
 }: Prop) => {
   return (
     <Link href={href}>
@@ -28,12 +30,35 @@ const ItemCardGrid = ({
           height: 200,
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-evenly",
+          justifyContent: "space-between",
           flexDirection: "column",
+          opacity: isAvailable ? 1 : 0.5,
           m: 2,
         }}
       >
-        <Box> {icon}</Box>
+        <Box
+          sx={{
+            width: "100%",
+            height: "50%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {image ? (
+            <Box
+              component="img"
+              sx={{
+                height: "100%",
+                width: { xs: "100%", md: "100%" },
+              }}
+              alt={title}
+              src={image}
+            />
+          ) : (
+            icon
+          )}
+        </Box>
         <Box>
           <Typography>{title}</Typography>
           {price && <Typography>{price} (Kyat)</Typography>}

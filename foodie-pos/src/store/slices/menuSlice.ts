@@ -1,7 +1,13 @@
 import { config } from "@/config";
-import { NewMenuPayload } from "@/type/menu";
+import {
+  DeleteMenuPayload,
+  NewMenuPayload,
+  UpdateMenuPayload,
+} from "@/type/menu";
 import { menu } from "@prisma/client";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { setMenuMenuCategory } from "./MenuMenuCategorySlice";
+import { setDisableLocationMenu } from "./DisableLocationMenuSlice";
 
 interface MenuSlice {
   menus: menu[];
@@ -17,7 +23,7 @@ const initialState: MenuSlice = {
 
 export const createMenu = createAsyncThunk(
   "menu/createMenu",
-  async (payload: NewMenuPayload, thuckApi) => {
+  async (payload: NewMenuPayload, thunkApi) => {
     const { onSuccess } = payload;
     const response = await fetch(`${config.backOfficeApi}/menu`, {
       method: "POST",
@@ -25,9 +31,41 @@ export const createMenu = createAsyncThunk(
       body: JSON.stringify({ ...payload }),
     });
     const dataFromServer = await response.json();
-    const { menu } = dataFromServer;
+    const { menu, menuCategoryMenuId } = dataFromServer;
+
     onSuccess && onSuccess();
     return menu;
+  }
+);
+
+export const updateMenu = createAsyncThunk(
+  "menu/updateMenu",
+  async (payload: UpdateMenuPayload, thunkApi) => {
+    const { onSuccess } = payload;
+    const response = await fetch(`${config.backOfficeApi}/menu`, {
+      method: "PUT",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const dataFromServer = await response.json();
+    const { menuMenuCategories, updatedMenu, disableLocationMenus } =
+      dataFromServer;
+    thunkApi.dispatch(replaceMenu(updatedMenu));
+    thunkApi.dispatch(setDisableLocationMenu(disableLocationMenus));
+    thunkApi.dispatch(setMenuMenuCategory(menuMenuCategories));
+    onSuccess && onSuccess();
+  }
+);
+
+export const DeleteMenu = createAsyncThunk(
+  "menu/deleteMenu",
+  async (payload: DeleteMenuPayload, thunkApi) => {
+    const { onSuccess, id } = payload;
+    await fetch(`${config.backOfficeApi}/menu?id=${id}`, {
+      method: "DELETE",
+    });
+    onSuccess && onSuccess();
+    thunkApi.dispatch(removeMenu(id));
   }
 );
 
@@ -41,10 +79,15 @@ export const menuSlice = createSlice({
     addMenu: (state, action: PayloadAction<menu>) => {
       state.menus = [...state.menus, action.payload];
     },
-    deleteMenu: (state, action: PayloadAction<menu>) => {
-      state.menus = state.menus.filter((menu) => {
-        menu.id === action.payload.id ? false : true;
-      });
+    removeMenu: (state, action: PayloadAction<Number>) => {
+      state.menus = state.menus.filter((menu) =>
+        menu.id === action.payload ? false : true
+      );
+    },
+    replaceMenu: (state, action: PayloadAction<menu>) => {
+      state.menus = state.menus.map((item) =>
+        item.id === action.payload.id ? action.payload : item
+      );
     },
   },
   extraReducers: (bulider) => {
@@ -65,6 +108,6 @@ export const menuSlice = createSlice({
   },
 });
 
-export const { setMenu, addMenu, deleteMenu } = menuSlice.actions;
+export const { setMenu, addMenu, removeMenu, replaceMenu } = menuSlice.actions;
 
 export default menuSlice.reducer;

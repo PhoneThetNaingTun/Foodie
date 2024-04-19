@@ -17,6 +17,8 @@ model menu {
   id                  Int                   @id @default(autoincrement())
   name                String
   price               Int
+  description         String?
+  assetUrl            String?
   createdDate         DateTime              @default(now())
   updatedDate         DateTime              @updatedAt
   isArchive           Boolean               @default(false)
@@ -34,14 +36,14 @@ model menuMenuCategory {
 }
 
 model menuCategory {
-  id                         Int                          @id @default(autoincrement())
+  id                         Int                           @id @default(autoincrement())
   name                       String
   companyId                  Int
-  isAvailable                Boolean                      @default(true)
-  createdDate                DateTime                     @default(now())
-  updatedDate                DateTime                     @updatedAt
-  isArchive                  Boolean                      @default(false)
-  company                    Company                      @relation(fields: [companyId], references: [id])
+  isAvailable                Boolean                       @default(true)
+  createdDate                DateTime                      @default(now())
+  updatedDate                DateTime                      @updatedAt
+  isArchive                  Boolean                       @default(false)
+  company                    Company                       @relation(fields: [companyId], references: [id])
   menuMenuCategory           menuMenuCategory[]
   disbleLocationMenuCategory DisableLocationMenuCategory[]
 }
@@ -70,16 +72,16 @@ model Company {
 }
 
 model Location {
-  id                         Int                          @id @default(autoincrement())
+  id                         Int                           @id @default(autoincrement())
   name                       String
   street                     String
   township                   String
   city                       String
   companyId                  Int
-  isArchive                  Boolean                      @default(false)
-  createdAt                  DateTime                     @default(now())
-  updatedAt                  DateTime                     @updatedAt
-  company                    Company                      @relation(fields: [companyId], references: [id])
+  isArchive                  Boolean                       @default(false)
+  createdAt                  DateTime                      @default(now())
+  updatedAt                  DateTime                      @updatedAt
+  company                    Company                       @relation(fields: [companyId], references: [id])
   disableLocationMenu        DisableLocationMenu[]
   disbleLocationMenuCategory DisableLocationMenuCategory[]
   Table                      Table[]

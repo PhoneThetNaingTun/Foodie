@@ -1,7 +1,7 @@
 import Layout from "@/components/BackOfficeLayout";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setSelectedLocation } from "@/store/slices/AppSlice";
-import { setLocation } from "@/store/slices/locationSlice";
+import { setLocation, updateLocation } from "@/store/slices/locationSlice";
 import { UpdatedLocationPayload } from "@/type/location";
 import {
   Box,
@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import ReplyIcon from "@mui/icons-material/Reply";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import { useEffect, useState } from "react";
+import { openSnackBar } from "@/store/slices/AppSnackBar";
 
 const LocationDetail = () => {
   const router = useRouter();
@@ -34,14 +35,31 @@ const LocationDetail = () => {
   }, [location]);
   if (!updateData) {
     return (
-      <Layout>
+      <Box>
         <Typography>Location Not Found</Typography>
-      </Layout>
+      </Box>
     );
   }
+  const handleUpdateLocation = () => {
+    updateData &&
+      dispatch(
+        updateLocation({
+          ...updateData,
+          onSuccess: () => {
+            dispatch(
+              openSnackBar({ type: "success", message: "Updated Successfully" })
+            );
+            router.push("/backoffice/location");
+          },
+          onError: () => {
+            dispatch(openSnackBar({ type: "error", message: "Error Occured" }));
+          },
+        })
+      );
+  };
 
   return (
-    <Layout>
+    <Box>
       <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
         <Button
           variant="contained"
@@ -132,21 +150,37 @@ const LocationDetail = () => {
             }}
           >
             <TextField
-              value={location?.name}
+              defaultValue={location?.name}
               variant="outlined"
               label="Location Name"
+              onChange={(event) => {
+                setUpdateData({ ...updateData, name: event.target.value });
+              }}
             />
             <TextField
-              value={location?.street}
+              defaultValue={location?.street}
               variant="outlined"
               label="Street"
+              onChange={(event) => {
+                setUpdateData({ ...updateData, street: event.target.value });
+              }}
             />
             <TextField
-              value={location?.township}
+              defaultValue={location?.township}
               variant="outlined"
               label="Township"
+              onChange={(event) => {
+                setUpdateData({ ...updateData, township: event.target.value });
+              }}
             />
-            <TextField value={location?.city} variant="outlined" label="City" />
+            <TextField
+              defaultValue={location?.city}
+              variant="outlined"
+              label="City"
+              onChange={(event) => {
+                setUpdateData({ ...updateData, city: event.target.value });
+              }}
+            />
           </Box>
           <Box
             sx={{
@@ -172,13 +206,14 @@ const LocationDetail = () => {
                 backgroundColor: "#0D9276",
                 "&:hover": { backgroundColor: "#0D9250" },
               }}
+              onClick={handleUpdateLocation}
             >
               Update
             </Button>
           </Box>
         </Box>
       </Box>
-    </Layout>
+    </Box>
   );
 };
 

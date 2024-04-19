@@ -8,5 +8,13 @@ export interface BaseMenu {
 
 export interface NewMenuPayload extends BaseOptions, BaseMenu {
   menuCategoryId: number[];
+  assetUrl?: string;
 }
-export interface UpdateMenuPayload extends menu, BaseMenu {}
+export interface UpdateMenuPayload extends menu, BaseMenu, BaseOptions {
+  isAvailable?: boolean;
+  locationId?: number;
+  menuCategoryIds?: number[];
+}
+export interface DeleteMenuPayload extends BaseOptions {
+  id: Number;
+}

@@ -18,6 +18,7 @@ import {
 } from "@/store/slices/menuCategorySlice";
 import DeleteDialog from "@/components/DeleteDialog";
 import { openSnackBar } from "@/store/slices/AppSnackBar";
+import BackButton from "@/components/BackButton";
 
 const MenuCategoryDetail = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -72,32 +73,16 @@ const MenuCategoryDetail = () => {
         })
       );
   };
-  console.log(updateData);
   if (!updateData) {
     return (
-      <Layout>
+      <Box>
         <Typography>Menu category not found</Typography>
-      </Layout>
+      </Box>
     );
   }
   return (
-    <Layout>
-      <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-        <Button
-          variant="contained"
-          onClick={() => {
-            router.push("/backoffice/menu-category");
-          }}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: "#0D9276",
-            "&:hover": { backgroundColor: "#0D9250" },
-          }}
-        >
-          <ReplyIcon sx={{ mb: "1px", mr: "3px" }} /> Back
-        </Button>
-      </Box>
+    <Box>
+      <BackButton route="menu-category" />
       <Box
         sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
       >
@@ -175,7 +160,7 @@ const MenuCategoryDetail = () => {
           router.push("/backoffice/menu-category");
         }}
       />
-    </Layout>
+    </Box>
   );
 };
 

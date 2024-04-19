@@ -7,3 +7,7 @@ export interface appSlice extends BaseOptions {
   isLoading: boolean;
   Error: Error | null;
 }
+
+export interface updateImagePayload extends BaseOptions {
+  file: File;
+}

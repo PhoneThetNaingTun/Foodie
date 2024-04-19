@@ -42,6 +42,7 @@ const NewMenuCategoryDialog = ({
   const handleCreateNewMenuCategory = () => {
     const isValid = newMenuCategory.name;
     if (!isValid) return;
+
     dispatch(
       createNewMenuCategory({
         ...newMenuCategory,

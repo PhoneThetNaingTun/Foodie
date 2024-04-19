@@ -1,10 +1,21 @@
 import Layout from "@/components/BackOfficeLayout";
+import ItemCardGrid from "@/components/ItemCardGrid";
 import NewAddonCategoryDialog from "@/components/NewAddonCategory";
+import { useAppSelector } from "@/store/hooks";
+import { NewAddonCategoryPayload } from "@/type/addonCategory";
 import { Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
+import ClassIcon from "@mui/icons-material/Class";
 
 const AddonCategory = () => {
   const [open, setOpen] = useState<boolean>(false);
+  const [NewAddonCategory, setNewAddonCategory] =
+    useState<NewAddonCategoryPayload>({
+      name: "",
+      isRequired: true,
+      menuIds: [],
+    });
+  const { addonCategories } = useAppSelector((state) => state.AddonCategory);
   return (
     <Layout>
       <Box
@@ -28,7 +39,25 @@ const AddonCategory = () => {
           </Button>
         </Box>
       </Box>
-      <NewAddonCategoryDialog open={open} setOpen={setOpen} />
+      <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)" }}>
+        {" "}
+        {addonCategories.map((item) => {
+          return (
+            <ItemCardGrid
+              icon={<ClassIcon />}
+              title={item.name}
+              href={`/backoffice/addon-category/${item.id}`}
+              isAvailable={true}
+            />
+          );
+        })}
+      </Box>
+      <NewAddonCategoryDialog
+        open={open}
+        setOpen={setOpen}
+        NewAddonCategory={NewAddonCategory}
+        setNewAddonCategory={setNewAddonCategory}
+      />
     </Layout>
   );
 };

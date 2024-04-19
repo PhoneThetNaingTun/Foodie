@@ -16,7 +16,7 @@ const DisableLocationMenuCategorySlice = createSlice({
       state,
       action: PayloadAction<DisableLocationMenuCategory[]>
     ) => {
-      state.disableLocationMenucategories = action.payload;
+      state.disableLocationMenucategories = [...action.payload];
     },
   },
 });

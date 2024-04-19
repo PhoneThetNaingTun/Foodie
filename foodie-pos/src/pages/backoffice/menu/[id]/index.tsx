@@ -2,6 +2,7 @@ import Layout from "@/components/BackOfficeLayout";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   Box,
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -14,15 +15,21 @@ import {
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/router";
+import ReplyIcon from "@mui/icons-material/Reply";
 import { menu, menuCategory } from "@prisma/client";
-
+import DeleteDialog from "@/components/DeleteDialog";
 import { useEffect, useState } from "react";
 import { UpdateMenuPayload } from "@/type/menu";
+import BackButton from "@/components/BackButton";
+import { DeleteMenu, updateMenu } from "@/store/slices/menuSlice";
+import { openSnackBar } from "@/store/slices/AppSnackBar";
 
 const MenuDetail = () => {
   const [updatedMenuData, setUpdatedMenuData] = useState<UpdateMenuPayload>();
+  const [open, setOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<number[]>([]);
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const menuId = Number(router.query.id);
   const { menus } = useAppSelector((state) => state.Menu);
   const { menuCategories } = useAppSelector((state) => state.MenuCategory);
@@ -30,6 +37,15 @@ const MenuDetail = () => {
   const { menuMenuCategories } = useAppSelector(
     (state) => state.MenuMenuCategory
   );
+  const { selectedLocation } = useAppSelector((state) => state.App);
+  const { disableLocationMenus } = useAppSelector(
+    (state) => state.DisableLocationMenu
+  );
+  const isAvailable = disableLocationMenus.find(
+    (item) => item.MenuId === menuId && item.locationId === selectedLocation?.id
+  )
+    ? false
+    : true;
   const selectedMenuCategoryIds = menuMenuCategories
     .filter((item) => item.menuId === menuId)
     .map((item) => {
@@ -44,16 +60,41 @@ const MenuDetail = () => {
       setSelected(selectedMenuCategoryIds);
     }
   }, [menu]);
-
+  useEffect(() => {
+    if (updatedMenuData) {
+      setUpdatedMenuData({
+        ...updatedMenuData,
+        locationId: selectedLocation?.id,
+        isAvailable,
+        menuCategoryIds: selected,
+      });
+    }
+  }, [selected]);
   if (!updatedMenuData) {
     return (
-      <Layout>
+      <Box>
         <Typography>Menu Not Found</Typography>
-      </Layout>
+      </Box>
     );
   }
+  const handleMenuUpdate = () => {
+    console.log(updatedMenuData);
+    updatedMenuData &&
+      dispatch(
+        updateMenu({
+          ...updatedMenuData,
+          onSuccess: () => {
+            dispatch(
+              openSnackBar({ type: "success", message: "Updated Successfully" })
+            );
+            router.push("/backoffice/menu");
+          },
+        })
+      );
+  };
   return (
-    <Layout>
+    <Box>
+      <BackButton route="menu" />
       <Box
         sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
       >
@@ -76,6 +117,7 @@ const MenuDetail = () => {
             Eidt Menu Detail
           </Typography>
           <TextField
+            sx={{ mb: 2 }}
             variant="outlined"
             label="name"
             value={updatedMenuData?.name}
@@ -87,6 +129,7 @@ const MenuDetail = () => {
             }}
           />
           <TextField
+            sx={{ mb: 2 }}
             variant="outlined"
             value={updatedMenuData.price}
             label="price"
@@ -97,7 +140,7 @@ const MenuDetail = () => {
               });
             }}
           />
-          <FormControl>
+          <FormControl sx={{ mb: 2 }}>
             <InputLabel>Menu Category</InputLabel>
             <Select
               multiple
@@ -126,9 +169,73 @@ const MenuDetail = () => {
               })}
             </Select>
           </FormControl>
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="success"
+                defaultChecked={isAvailable}
+                onChange={(event, value) => {
+                  setUpdatedMenuData({
+                    ...updatedMenuData,
+                    isAvailable: value,
+                  });
+                }}
+              />
+            }
+            label="Available"
+          />
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#cc3333",
+                "&:hover": { backgroundColor: "#CC0000" },
+              }}
+              onClick={() => setOpen(true)}
+            >
+              Delete
+            </Button>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#0D9276",
+                "&:hover": { backgroundColor: "#0D9250" },
+              }}
+              onClick={handleMenuUpdate}
+            >
+              Update
+            </Button>
+          </Box>
         </Box>
       </Box>
-    </Layout>
+      <DeleteDialog
+        open={open}
+        setOpen={setOpen}
+        message={"Are You Sure You Want To Delete This Menu?"}
+        handleDelete={() => {
+          dispatch(
+            DeleteMenu({
+              id: menuId,
+              onSuccess: () => {
+                dispatch(
+                  openSnackBar({
+                    type: "success",
+                    message: "Menu Deleted Successfully!",
+                  })
+                );
+              },
+              onError: () => {
+                dispatch(
+                  openSnackBar({ type: "error", message: "Error Occured" })
+                );
+              },
+            })
+          );
+          setOpen(false);
+          router.push("/backoffice/menu");
+        }}
+      />
+    </Box>
   );
 };
 

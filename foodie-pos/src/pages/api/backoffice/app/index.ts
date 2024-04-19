@@ -47,6 +47,9 @@ export default async function handler(
           where: { id: { in: menuMenuCategoryId }, isArchive: false },
         });
         const menuId = menus.map((item) => item.id);
+        const disableLocationMenus = await prisma.disableLocationMenu.findMany({
+          where: { MenuId: { in: menuId } },
+        });
         const menuAddonCategories = await prisma.menuAddonCategory.findMany({
           where: { menuId: { in: menuId } },
         });
@@ -54,11 +57,14 @@ export default async function handler(
           (item) => item.AddonCategoryId
         );
         const addonCategories = await prisma.addonCategory.findMany({
-          where: { id: { in: menuAddonCategoryId } },
+          where: { id: { in: menuAddonCategoryId }, isArchive: false },
         });
         const AddonCategoryId = addonCategories.map((item) => item.id);
         const addons = await prisma.addon.findMany({
-          where: { AddonCategoryId: { in: AddonCategoryId } },
+          where: {
+            AddonCategoryId: { in: AddonCategoryId },
+            isArchived: false,
+          },
         });
         res.status(200).json({
           company,
@@ -67,6 +73,7 @@ export default async function handler(
           menus,
           menuCategories,
           disableLocationMenuCategories,
+          disableLocationMenus,
           menuMenuCategories,
           addonCategories,
           menuAddonCategories,

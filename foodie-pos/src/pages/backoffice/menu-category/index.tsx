@@ -23,7 +23,7 @@ const MenuCategory = () => {
     });
 
   return (
-    <Layout>
+    <Box>
       <Box
         sx={{
           display: "flex",
@@ -78,7 +78,7 @@ const MenuCategory = () => {
         newMenuCategory={newMenuCategory}
         setNewMenuCategory={setNewMenuCategory}
       />
-    </Layout>
+    </Box>
   );
 };
 

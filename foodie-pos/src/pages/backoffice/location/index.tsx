@@ -20,7 +20,7 @@ const Location = () => {
   });
   const { locations } = useAppSelector((state) => state.Location);
   return (
-    <Layout>
+    <Box>
       <Box
         sx={{
           display: "flex",
@@ -49,6 +49,7 @@ const Location = () => {
               icon={<LocationOnIcon />}
               title={item.name}
               href={`/backoffice/location/${item.id}`}
+              isAvailable={true}
             />
           );
         })}
@@ -59,7 +60,7 @@ const Location = () => {
         newLocation={newLocaion}
         setNewLocation={setNewLocation}
       />
-    </Layout>
+    </Box>
   );
 };
 

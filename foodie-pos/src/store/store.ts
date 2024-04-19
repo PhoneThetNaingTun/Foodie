@@ -4,9 +4,14 @@ import SnackBarReducer from "./slices/AppSnackBar";
 import AppReducer from "./slices/AppSlice";
 import MenuCategoryReducer from "./slices/menuCategorySlice";
 import CompanyReducer from "./slices/CompanySlice";
-import MenuMenuCategoryReducer from "./slices/MenuMenuCategory";
+import MenuMenuCategoryReducer from "./slices/MenuMenuCategorySlice";
 import LocationReducer from "./slices/locationSlice";
 import DisableLocationMenuCategoryReducer from "./slices/DisableLocationMenuCategorySlice";
+import DisableLocationMenuReducer from "./slices/DisableLocationMenuSlice";
+import AddonCategoryReducer from "./slices/AddonCategorySlice";
+import MenuAddonCategoryReducer from "./slices/MenuAddonCategorySlice";
+import AddonReducer from "./slices/AddonSlice";
+import TableReducer from "./slices/TableSlice";
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +20,12 @@ export const store = configureStore({
     Location: LocationReducer,
     MenuCategory: MenuCategoryReducer,
     DisableLocationMenuCategory: DisableLocationMenuCategoryReducer,
+    DisableLocationMenu: DisableLocationMenuReducer,
     Menu: MenuReducer,
+    Addon: AddonReducer,
+    AddonCategory: AddonCategoryReducer,
+    MenuAddonCategory: MenuAddonCategoryReducer,
+    Table: TableReducer,
     SnackBar: SnackBarReducer,
     MenuMenuCategory: MenuMenuCategoryReducer,
   },

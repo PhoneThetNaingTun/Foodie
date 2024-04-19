@@ -15,10 +15,14 @@ const Menu = () => {
     price: 0,
     menuCategoryId: [],
   });
+  const { disableLocationMenus } = useAppSelector(
+    (state) => state.DisableLocationMenu
+  );
+  const { selectedLocation } = useAppSelector((state) => state.App);
   const { menus } = useAppSelector((state) => state.Menu);
 
   return (
-    <Layout>
+    <Box>
       <Box
         sx={{
           display: "flex",
@@ -42,12 +46,21 @@ const Menu = () => {
       </Box>
       <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)" }}>
         {menus.map((item) => {
+          const isAvailable = disableLocationMenus.find(
+            (disableLocationMenu) =>
+              disableLocationMenu.MenuId === item.id &&
+              disableLocationMenu.locationId === selectedLocation?.id
+          )
+            ? false
+            : true;
           return (
             <ItemCardGrid
               key={item.id}
               icon={<LocalDiningIcon />}
               title={item.name}
               price={item.price}
+              image={item?.assetUrl}
+              isAvailable={isAvailable}
               href={`/backoffice/menu/${item.id}`}
             />
           );
@@ -59,7 +72,7 @@ const Menu = () => {
         newMenu={newMenu}
         setNewMenu={setNewMenu}
       />
-    </Layout>
+    </Box>
   );
 };
 

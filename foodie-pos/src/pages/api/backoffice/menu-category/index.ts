@@ -38,17 +38,9 @@ export default async function handler(
           }));
       }
     }
-    const location = await prisma.location.findFirst({
-      where: { id: locationId },
-    });
-    const menuCategories = await prisma.menuCategory.findMany({
-      where: { companyId: location?.id },
-    });
-    const menuCategoryIds = menuCategories.map((item) => item.id);
+
     const disabledLocationMenuCategories =
-      await prisma.disableLocationMenuCategory.findMany({
-        where: { MenuCategoryId: { in: menuCategoryIds } },
-      });
+      await prisma.disableLocationMenuCategory.findMany();
     return res
       .status(200)
       .json({ updatedMenuCategory, disabledLocationMenuCategories });
