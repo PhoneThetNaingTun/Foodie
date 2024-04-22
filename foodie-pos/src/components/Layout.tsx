@@ -19,7 +19,7 @@ const Layout = ({ children }: Prop) => {
   if (orederLayout) {
     return <Box>{children}</Box>;
   }
-  return <Box></Box>;
+  return <Box>{children}</Box>;
 };
 
 export default Layout;

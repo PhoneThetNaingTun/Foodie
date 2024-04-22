@@ -1,5 +1,5 @@
 import { config } from "@/config";
-import { NewTablePayload, tableSlice } from "@/type/table";
+import { NewTablePayload, UpdatedTablePayload, tableSlice } from "@/type/table";
 import { Table } from "@prisma/client";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
@@ -25,6 +25,22 @@ export const createTable = createAsyncThunk(
   }
 );
 
+export const updateTable = createAsyncThunk(
+  "tableSlice/updateTable",
+  async (payload: UpdatedTablePayload, thunkApi) => {
+    const { onSuccess } = payload;
+    const response = await fetch(`${config.backOfficeApi}/table`, {
+      method: "PUT",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const dataFromServer = await response.json();
+    const { updatedTable } = dataFromServer;
+    onSuccess && onSuccess();
+    thunkApi.dispatch(replaceTable(updatedTable));
+  }
+);
+
 const TableSlice = createSlice({
   name: "tableSlice",
   initialState,
@@ -35,8 +51,13 @@ const TableSlice = createSlice({
     addTable: (state, action: PayloadAction<Table>) => {
       state.tables = [...state.tables, action.payload];
     },
+    replaceTable: (state, action: PayloadAction<Table>) => {
+      state.tables = state.tables.map((item) =>
+        item.id === action.payload.id ? action.payload : item
+      );
+    },
   },
 });
 
-export const { setTables, addTable } = TableSlice.actions;
+export const { setTables, addTable, replaceTable } = TableSlice.actions;
 export default TableSlice.reducer;

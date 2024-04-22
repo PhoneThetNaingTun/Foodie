@@ -42,7 +42,7 @@ const Location = () => {
           </Button>
         </Box>
       </Box>
-      <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)" }}>
+      <Box sx={{ display: "flex" }}>
         {locations.map((item) => {
           return (
             <ItemCardGrid

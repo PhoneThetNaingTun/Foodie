@@ -59,7 +59,7 @@ const ItemCardGrid = ({
             icon
           )}
         </Box>
-        <Box>
+        <Box sx={{ mb: 4 }}>
           <Typography>{title}</Typography>
           {price && <Typography>{price} (Kyat)</Typography>}
           {subTitle && <Typography>{subTitle}</Typography>}

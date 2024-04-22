@@ -17,7 +17,7 @@ const AddonCategory = () => {
     });
   const { addonCategories } = useAppSelector((state) => state.AddonCategory);
   return (
-    <Layout>
+    <Box>
       <Box
         sx={{
           display: "flex",
@@ -58,7 +58,7 @@ const AddonCategory = () => {
         NewAddonCategory={NewAddonCategory}
         setNewAddonCategory={setNewAddonCategory}
       />
-    </Layout>
+    </Box>
   );
 };
 

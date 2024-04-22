@@ -174,7 +174,7 @@ const AddonCategoryDetails = () => {
                   return selected
                     .map((itemId) => menus.find((item) => item.id === itemId))
                     .map((item) => item?.name)
-                    .join(", ");
+                    .join(" , ");
                 }}
               >
                 {menus.map((item) => {

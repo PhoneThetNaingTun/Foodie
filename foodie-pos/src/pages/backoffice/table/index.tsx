@@ -16,7 +16,7 @@ const Table = () => {
     locationId: selectedLocation?.id,
   });
   return (
-    <Layout>
+    <Box>
       <Box
         sx={{
           display: "flex",
@@ -38,16 +38,36 @@ const Table = () => {
           </Button>
         </Box>
       </Box>
-      <Box>
+      <Box sx={{ display: "flex" }}>
         {tables.map((item) => {
           return (
-            <ItemCardGrid
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
               key={item.id}
-              icon={<TableBarIcon />}
-              title={item.name}
-              href={`/backoffice/table/${item.id}`}
-              isAvailable={true}
-            />
+            >
+              {" "}
+              <ItemCardGrid
+                icon={<TableBarIcon />}
+                title={item.name}
+                href={`/backoffice/table/${item.id}`}
+                isAvailable={true}
+              />
+              <Button
+                variant="contained"
+                sx={{
+                  width: "fit-content",
+                  backgroundColor: "#0D9276",
+                  "&:hover": { backgroundColor: "#0D8376" },
+                }}
+              >
+                Print Qr
+              </Button>
+            </Box>
           );
         })}
       </Box>
@@ -57,7 +77,7 @@ const Table = () => {
         newTable={newTable}
         setNewTable={setNewTable}
       />
-    </Layout>
+    </Box>
   );
 };
 

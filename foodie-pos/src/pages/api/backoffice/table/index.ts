@@ -16,6 +16,14 @@ export default async function handler(
     });
     return res.status(200).json({ newTable });
   } else if (method === "PUT") {
+    const { id, name } = req.body;
+    const exist = await prisma.table.findFirst({ where: { id } });
+    if (!exist) return res.status(400).send("Bad Request");
+    const updatedTable = await prisma.table.update({
+      data: { name },
+      where: { id },
+    });
+    return res.status(200).json({ updatedTable });
   } else if (method === "DELETE") {
   }
   return res.status(405).send("Invalid Method");

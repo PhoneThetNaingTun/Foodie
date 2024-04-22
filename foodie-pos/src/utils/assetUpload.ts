@@ -20,7 +20,7 @@ export const assetUpload = multer({
     key: (request, file, cb) => {
       cb(
         null,
-        `foodie-pos/msquarefdc-batch3/msquareprogramming/${Date.now()}_${
+        `foodie-pos/msquarefdc-batch3/phone-thet-naing-tun/${Date.now()}_${
           file.originalname
         }`
       );

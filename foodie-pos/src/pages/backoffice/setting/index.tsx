@@ -1,11 +1,11 @@
 import Layout from "@/components/BackOfficeLayout";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const Setting = () => {
   return (
-    <Layout>
+    <Box>
       <Typography>Setting page</Typography>
-    </Layout>
+    </Box>
   );
 };
 
