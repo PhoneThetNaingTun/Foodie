@@ -1,3 +1,4 @@
+import { qrImageUpload } from "@/utils/assetUpload";
 import { prisma } from "@/utils/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -11,8 +12,13 @@ export default async function handler(
     const { name, locationId } = req.body;
     const isValid = name && locationId !== undefined;
     if (!isValid) return res.status(400).send("Bad Request");
-    const newTable = await prisma.table.create({
+    let newTable = await prisma.table.create({
       data: { name, locationId, assetUrl: "" },
+    });
+    const assetUrl = await qrImageUpload(newTable.id);
+    newTable = await prisma.table.update({
+      data: { assetUrl },
+      where: { id: newTable.id },
     });
     return res.status(200).json({ newTable });
   } else if (method === "PUT") {

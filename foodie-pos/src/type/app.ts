@@ -11,3 +11,7 @@ export interface appSlice extends BaseOptions {
 export interface updateImagePayload extends BaseOptions {
   file: File;
 }
+
+export interface getAppDataOptions extends BaseOptions {
+  tableId?: string;
+}

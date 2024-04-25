@@ -25,6 +25,7 @@ model menu {
   menuMenuCategory    menuMenuCategory[]
   MenuAddonCategory   MenuAddonCategory[]
   disableLocationMenu DisableLocationMenu[]
+  Order               Order[]
 }
 
 model menuMenuCategory {
@@ -116,6 +117,7 @@ model Addon {
   updatedAt       DateTime @updatedAt
 
   AddonCategory AddonCategory @relation(fields: [AddonCategoryId], references: [id])
+  Order         Order[]
 }
 
 model DisableLocationMenu {
@@ -143,4 +145,28 @@ model Table {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   location   Location @relation(fields: [locationId], references: [id])
+  Order      Order[]
+}
+
+model Order {
+  id         Int         @id @default(autoincrement())
+  menuId     Int
+  addonId    Int?
+  quantity   Int
+  orderSeq   String
+  status     ORDERSTATUS
+  totalPrice Int
+  tableId    Int
+  isArchived Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  addon      Addon?      @relation(fields: [addonId], references: [id])
+  menu       menu        @relation(fields: [menuId], references: [id])
+  table      Table       @relation(fields: [tableId], references: [id])
+}
+
+enum ORDERSTATUS {
+  PENDING
+  COOKING
+  COMPLETE
 }

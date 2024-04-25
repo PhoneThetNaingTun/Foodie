@@ -15,6 +15,12 @@ const Table = () => {
     name: "",
     locationId: selectedLocation?.id,
   });
+  const handleQRImagePrint = (assetUrl: string) => {
+    const imageWindow = window.open("");
+    imageWindow?.document.write(
+      `<html><head><title>Print Image</title></head><body style="text-align: center;"><img src="${assetUrl}" onload="window.print();window.close()" /></body></html>`
+    );
+  };
   return (
     <Box>
       <Box
@@ -58,6 +64,7 @@ const Table = () => {
                 isAvailable={true}
               />
               <Button
+                onClick={() => handleQRImagePrint(item.assetUrl)}
                 variant="contained"
                 sx={{
                   width: "fit-content",

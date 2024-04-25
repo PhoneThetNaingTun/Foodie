@@ -17,7 +17,7 @@ const BackOfficeLayout = ({ children }: Prop) => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (!init) {
-      dispatch(fetchAppData());
+      dispatch(fetchAppData({}));
     }
   }, [init]);
   return (

@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { useRouter } from "next/router";
 import BackOfficeLayout from "./BackOfficeLayout";
 import { ReactNode } from "react";
+import OrderLayout from "./OrderLayout";
 
 interface Prop {
   children: ReactNode;
@@ -17,7 +18,7 @@ const Layout = ({ children }: Prop) => {
     return <BackOfficeLayout>{children}</BackOfficeLayout>;
   }
   if (orederLayout) {
-    return <Box>{children}</Box>;
+    return <OrderLayout>{children}</OrderLayout>;
   }
   return <Box>{children}</Box>;
 };

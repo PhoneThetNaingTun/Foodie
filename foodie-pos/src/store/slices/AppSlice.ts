@@ -5,7 +5,7 @@ import { setMenuCategories } from "./menuCategorySlice";
 import { setCompanies } from "./CompanySlice";
 import { setMenuMenuCategory } from "./MenuMenuCategorySlice";
 import { setLocation } from "./locationSlice";
-import { appSlice, updateImagePayload } from "@/type/app";
+import { appSlice, getAppDataOptions, updateImagePayload } from "@/type/app";
 import { Location } from "@prisma/client";
 import { setDisabledLocationMenuCategory } from "./DisableLocationMenuCategorySlice";
 import { setDisableLocationMenu } from "./DisableLocationMenuSlice";
@@ -39,9 +39,13 @@ export const uploadAsset = createAsyncThunk(
 
 export const fetchAppData = createAsyncThunk(
   "app/fetchAppData",
-  async (_, thunkApi) => {
+  async (options: getAppDataOptions, thunkApi) => {
     thunkApi.dispatch(setIsLoading(true));
-    const response = await fetch(`${config.backOfficeApi}/app`);
+    const { tableId } = options;
+    const appUrl = tableId
+      ? `${config.orderAppApiUrl}/app`
+      : `${config.backOfficeApi}/app`;
+    const response = await fetch(appUrl);
     const dataFromServer = await response.json();
     const {
       company,
