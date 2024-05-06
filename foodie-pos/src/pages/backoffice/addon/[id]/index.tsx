@@ -33,6 +33,11 @@ const AddonDetails = () => {
       setSelected(addon.AddonCategoryId);
     }
   }, [addon]);
+  useEffect(() => {
+    if (selected && updatedAddonData) {
+      setUpdatedAddonData({ ...updatedAddonData, AddonCategoryId: selected });
+    }
+  }, [selected]);
 
   if (!updatedAddonData) {
     return (
@@ -41,11 +46,7 @@ const AddonDetails = () => {
       </Box>
     );
   }
-  useEffect(() => {
-    if (selected) {
-      setUpdatedAddonData({ ...updatedAddonData, AddonCategoryId: selected });
-    }
-  }, [selected]);
+
   return (
     <Box>
       <Box sx={{ display: "flex", justifyContent: "flex-start" }}>

@@ -1,5 +1,6 @@
 import { config } from "@/config";
 import {
+  DeleteLocaionPayload,
   LocationSlice,
   NewLocationPayload,
   UpdatedLocationPayload,
@@ -42,6 +43,18 @@ export const updateLocation = createAsyncThunk(
   }
 );
 
+export const deleteLocation = createAsyncThunk(
+  "locationSlice/deleteLocation",
+  async (payload: DeleteLocaionPayload, thunkApi) => {
+    const { id, onSuccess } = payload;
+    const response = await fetch(`${config.backOfficeApi}/location?id=${id}`, {
+      method: "DELETE",
+    });
+    onSuccess && onSuccess();
+    thunkApi.dispatch(removeLocation(id));
+  }
+);
+
 const locationSlice = createSlice({
   name: "Location",
   initialState,
@@ -57,9 +70,14 @@ const locationSlice = createSlice({
         item.id === action.payload.id ? action.payload : item
       );
     },
+    removeLocation: (state, action: PayloadAction<Number>) => {
+      state.locations = state.locations.filter((item) =>
+        item.id === action.payload ? false : true
+      );
+    },
   },
 });
 
-export const { setLocation, addLocation, replaceLocation } =
+export const { setLocation, addLocation, replaceLocation, removeLocation } =
   locationSlice.actions;
 export default locationSlice.reducer;

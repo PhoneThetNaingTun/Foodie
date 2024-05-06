@@ -31,7 +31,7 @@ const TableDetails = () => {
       </Box>
     );
   }
-  console.log(updatedDataTable);
+
   const handleUpdateTable = () => {
     updatedDataTable &&
       dispatch(

@@ -13,8 +13,8 @@ const OrderLayout = ({ children }: Prop) => {
   const router = useRouter();
   const { tableId } = router.query;
   useEffect(() => {
-    if (!tableId) {
-      dispatch(fetchAppData({ tableId: String(tableId) }));
+    if (tableId) {
+      dispatch(fetchAppData({ tableId: Number(tableId) }));
     }
   }, [tableId]);
   return <Box>{children}</Box>;

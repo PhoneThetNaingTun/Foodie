@@ -26,6 +26,11 @@ export default async function handler(
     });
     return res.status(200).json({ updatedLocation });
   } else if (method === "DELETE") {
+    const id = Number(req.query.id);
+    const isExist = await prisma.location.findFirst({ where: { id } });
+    if (!isExist) return res.status(400).send("Bad Request");
+    await prisma.location.update({ data: { isArchive: true }, where: { id } });
+    return res.status(200).send("OK");
   }
   return res.status(405).send("Invalid Method");
 }

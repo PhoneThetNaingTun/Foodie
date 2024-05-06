@@ -13,5 +13,5 @@ export interface updateImagePayload extends BaseOptions {
 }
 
 export interface getAppDataOptions extends BaseOptions {
-  tableId?: string;
+  tableId?: number;
 }

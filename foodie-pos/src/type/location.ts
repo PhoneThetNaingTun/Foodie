@@ -17,3 +17,6 @@ export interface LocationSlice {
 }
 
 export interface UpdatedLocationPayload extends BaseOptions, Location {}
+export interface DeleteLocaionPayload extends BaseOptions {
+  id: number;
+}

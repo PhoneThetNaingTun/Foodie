@@ -20,7 +20,7 @@ export default async function handler(
           where: { id: companyId },
         });
         const locations = await prisma.location.findMany({
-          where: { companyId },
+          where: { companyId, isArchive: false },
         });
         const locationIds = locations.map((item) => item.id);
         const tables = await prisma.table.findMany({

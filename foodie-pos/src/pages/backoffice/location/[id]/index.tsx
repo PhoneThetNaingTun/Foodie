@@ -1,7 +1,11 @@
 import Layout from "@/components/BackOfficeLayout";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setSelectedLocation } from "@/store/slices/AppSlice";
-import { setLocation, updateLocation } from "@/store/slices/locationSlice";
+import {
+  deleteLocation,
+  setLocation,
+  updateLocation,
+} from "@/store/slices/locationSlice";
 import { UpdatedLocationPayload } from "@/type/location";
 import {
   Box,
@@ -18,11 +22,13 @@ import ReplyIcon from "@mui/icons-material/Reply";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import { useEffect, useState } from "react";
 import { openSnackBar } from "@/store/slices/AppSnackBar";
+import DeleteDialog from "@/components/DeleteDialog";
 
 const LocationDetail = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [updateData, setUpdateData] = useState<UpdatedLocationPayload>();
+  const [open, setOpen] = useState<boolean>(false);
   const LocationId = Number(router.query.id);
   const { selectedLocation } = useAppSelector((state) => state.App);
   const { locations } = useAppSelector((state) => state.Location);
@@ -197,6 +203,9 @@ const LocationDetail = () => {
                 backgroundColor: "#cc3333",
                 "&:hover": { backgroundColor: "#CC0000" },
               }}
+              onClick={() => {
+                setOpen(true);
+              }}
             >
               Delete
             </Button>
@@ -213,6 +222,27 @@ const LocationDetail = () => {
           </Box>
         </Box>
       </Box>
+      <DeleteDialog
+        open={open}
+        setOpen={setOpen}
+        message="Are You Sure You Want To Delete This Location?"
+        handleDelete={() => {
+          dispatch(
+            deleteLocation({
+              id: LocationId,
+              onSuccess: () => {
+                dispatch(
+                  openSnackBar({
+                    type: "success",
+                    message: "Location Deleted Successfully",
+                  })
+                );
+                router.push("/backoffice/location");
+              },
+            })
+          );
+        }}
+      />
     </Box>
   );
 };

@@ -2,11 +2,7 @@ import Layout from "@/components/BackOfficeLayout";
 import { Typography } from "@mui/material";
 
 const Order = () => {
-  return (
-    <Layout>
-      <Typography>Order page</Typography>
-    </Layout>
-  );
+  return <Typography>Order page</Typography>;
 };
 
 export default Order;

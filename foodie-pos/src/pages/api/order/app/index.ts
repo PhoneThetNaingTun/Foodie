@@ -7,14 +7,15 @@ export default async function handler(
 ) {
   const method = req.method;
   const { tableId } = req.query;
-  if (!tableId) return res.status(400).send("Bad Request");
+  const isValid = tableId;
+  if (!isValid) return res.status(400).send("Bad Request");
   if (method === "GET") {
     const table = await prisma.table.findFirst({
       where: { id: Number(tableId) },
     });
-    if (!table) return res.status(400).send("Bad Request");
+
     const location = await prisma.location.findFirst({
-      where: { id: table.locationId },
+      where: { id: table?.locationId },
     });
     const company = await prisma.company.findFirst({
       where: { id: location?.companyId },
@@ -62,8 +63,23 @@ export default async function handler(
     const addons = await prisma.addon.findMany({
       where: { AddonCategoryId: { in: addonCategoryIds }, isArchived: false },
     });
-    const order = await prisma.order.findMany({
+    const orders = await prisma.order.findMany({
       where: { tableId: Number(tableId) },
+    });
+
+    return res.status(200).json({
+      company,
+      locations: [location],
+      menuCategories,
+      menus,
+      menuMenuCategories,
+      menuAddonCategories,
+      addonCategories,
+      addons,
+      tables: [table],
+      disableLocationMenuCategories: [],
+      disableLocationMenus: [],
+      orders,
     });
   }
 
