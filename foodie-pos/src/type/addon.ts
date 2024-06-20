@@ -14,3 +14,6 @@ export interface NewAddonPayload extends BaseOptions {
 }
 
 export interface UpdateAddonPayload extends Addon, BaseOptions {}
+export interface DeleteAddonPayload extends BaseOptions {
+  id: Number;
+}

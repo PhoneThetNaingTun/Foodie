@@ -15,6 +15,8 @@ import { useEffect, useState } from "react";
 import ReplyIcon from "@mui/icons-material/Reply";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { UpdateAddonPayload } from "@/type/addon";
+import { deleteAddon, updateAddon } from "@/store/slices/AddonSlice";
+import { openSnackBar } from "@/store/slices/AppSnackBar";
 
 const AddonDetails = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -102,6 +104,12 @@ const AddonDetails = () => {
               label="Addon Category Name"
               sx={{ mb: 2 }}
               defaultValue={updatedAddonData?.name}
+              onChange={(event) => {
+                setUpdatedAddonData({
+                  ...updatedAddonData,
+                  name: event.target.value,
+                });
+              }}
             />
             <FormControl>
               <Select
@@ -146,7 +154,22 @@ const AddonDetails = () => {
                 backgroundColor: "#0D9276",
                 "&:hover": { backgroundColor: "#0D9250" },
               }}
-              onClick={() => {}}
+              onClick={() => {
+                dispatch(
+                  updateAddon({
+                    ...updatedAddonData,
+                    onSuccess: () => {
+                      dispatch(
+                        openSnackBar({
+                          type: "success",
+                          message: "Addon Updated Successfully",
+                        })
+                      );
+                      router.push("/backoffice/addon");
+                    },
+                  })
+                );
+              }}
             >
               Update
             </Button>
@@ -157,7 +180,22 @@ const AddonDetails = () => {
         open={open}
         setOpen={setOpen}
         message="Are You Sure You Want To Delete This Addon Category?"
-        handleDelete={() => {}}
+        handleDelete={() => {
+          dispatch(
+            deleteAddon({
+              id: addonId,
+              onSuccess: () => {
+                dispatch(
+                  openSnackBar({
+                    type: "success",
+                    message: "Addon Deleted Successfully",
+                  })
+                );
+                router.push("/backoffice/addon");
+              },
+            })
+          );
+        }}
       />
     </Box>
   );

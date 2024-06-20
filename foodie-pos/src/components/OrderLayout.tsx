@@ -17,7 +17,11 @@ const OrderLayout = ({ children }: Prop) => {
       dispatch(fetchAppData({ tableId: Number(tableId) }));
     }
   }, [tableId]);
-  return <Box>{children}</Box>;
+  return (
+    <Box sx={{ overflow: "scroll", height: "100vh", bgcolor: "#FBF9F1" }}>
+      {children}
+    </Box>
+  );
 };
 
 export default OrderLayout;

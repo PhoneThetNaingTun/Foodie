@@ -16,7 +16,20 @@ export default async function handler(
     });
     return res.status(200).json({ newAddon });
   } else if (method === "PUT") {
+    const { id, ...payload } = req.body;
+    const isExist = await prisma.addon.findFirst({ where: { id } });
+    if (!isExist) return res.status(400).send("Bad Request");
+    const updatedAddon = await prisma.addon.update({
+      data: payload,
+      where: { id },
+    });
+    return res.status(200).json({ updatedAddon });
   } else if (method === "DELETE") {
+    const id = Number(req.query.id);
+    const isExist = await prisma.addon.findFirst({ where: { id } });
+    if (!isExist) return res.status(400).send("Bad Request");
+    await prisma.addon.update({ data: { isArchived: true }, where: { id } });
+    return res.status(200).send("OK");
   }
   return res.status(405).send("Invalid Method");
 }
