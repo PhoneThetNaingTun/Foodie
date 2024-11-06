@@ -44,7 +44,7 @@ const Menu = () => {
           </Button>
         </Box>
       </Box>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)" }}>
         {menus.map((item) => {
           const isAvailable = disableLocationMenus.find(
             (disableLocationMenu) =>

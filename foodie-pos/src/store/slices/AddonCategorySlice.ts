@@ -73,9 +73,9 @@ const AddonCategorySlice = createSlice({
       state.addonCategories = [...state.addonCategories, action.payload];
     },
     removeAddonCategory: (state, action: PayloadAction<Number>) => {
-      state.addonCategories = state.addonCategories.filter((item) => {
-        item.id === action.payload ? false : true;
-      });
+      state.addonCategories = state.addonCategories.filter((item) =>
+        item.id === action.payload ? false : true
+      );
     },
     replaceAddonCategory: (state, action: PayloadAction<AddonCategory>) => {
       state.addonCategories = state.addonCategories.map((addonCategory) =>

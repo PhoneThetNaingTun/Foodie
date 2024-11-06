@@ -24,8 +24,8 @@ const AddonCategoriesOrderPage = ({
               mb: 4,
               bgcolor: "#ffff",
               p: 3,
-              borderRadius: 3,
-              boxShadow: "1px 1px 5px black",
+              borderRadius: 1,
+              backgroundColor: "rgb(251, 251, 251)",
             }}
           >
             <Box

@@ -1,4 +1,3 @@
-import Addon from "@/pages/backoffice/addon";
 import { prisma } from "@/utils/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
@@ -66,6 +65,9 @@ export default async function handler(
             isArchived: false,
           },
         });
+        const orders = await prisma.order.findMany({
+          where: { tableId: { in: tables.map((item) => item.id) } },
+        });
         res.status(200).json({
           company,
           locations,
@@ -78,6 +80,7 @@ export default async function handler(
           addonCategories,
           menuAddonCategories,
           addons,
+          orders,
         });
       } else {
         const newCompany = await prisma.company.create({
@@ -130,6 +133,7 @@ export default async function handler(
         const newAddon = await prisma.$transaction(
           newAddonsData.map((addon) => prisma.addon.create({ data: addon }))
         );
+
         res.status(200).json({
           company: newCompany,
           locations: [newLocation],
@@ -141,6 +145,7 @@ export default async function handler(
           menuAddonCategories: [newMenuAddonCategory],
           addons: [newAddon],
           disableLocationMenuCategories: [],
+          orders: [],
         });
       }
     } else {

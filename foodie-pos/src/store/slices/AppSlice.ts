@@ -13,6 +13,7 @@ import { setMenuAddonCategories } from "./MenuAddonCategorySlice";
 import { setAddonCategories } from "./AddonCategorySlice";
 import { setAddons } from "./AddonSlice";
 import { setTables } from "./TableSlice";
+import { setOrder } from "./OrderSlice";
 
 const initialState: appSlice = {
   init: false,
@@ -58,7 +59,7 @@ export const fetchAppData = createAsyncThunk(
       addonCategories,
       disableLocationMenus,
       menuAddonCategories,
-
+      orders,
       addons,
     } = dataFromServer;
     thunkApi.dispatch(setMenu(menus));
@@ -74,6 +75,7 @@ export const fetchAppData = createAsyncThunk(
     thunkApi.dispatch(setDisableLocationMenu(disableLocationMenus));
     thunkApi.dispatch(setAddons(addons));
     thunkApi.dispatch(setTables(tables));
+    thunkApi.dispatch(setOrder(orders));
     const selectedLocationId = localStorage.getItem("selectedLocationId");
     if (selectedLocationId) {
       const selectedLocation = locations.find(

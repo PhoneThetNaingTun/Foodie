@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Box, Button, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -7,11 +7,19 @@ import { SetStateAction, useEffect, useState } from "react";
 import { Addon } from "@prisma/client";
 import AddonCategories from "@/components/AddonCategories";
 import ReplyIcon from "@mui/icons-material/Reply";
+import QuantitySelector from "@/components/QuantitySelector";
+import { cartItem } from "@/type/cart";
+import { nanoid } from "nanoid";
+import { addItemtoCart } from "@/store/slices/CartSlice";
 
 const OrderPageMenuDetails = () => {
-  const { isReady, ...router } = useRouter();
-  const tableId = Number(router.query.tableId);
-  const menuId = Number(router.query.id);
+  const { query, isReady, ...router } = useRouter();
+  const dispatch = useAppDispatch();
+  const tableId = Number(query.tableId);
+  const cartItems = useAppSelector((state) => state.Cart.items);
+  const menuId = Number(query.id);
+  const cartItemId = query.cartItemId;
+  const cartItem = cartItems.find((item) => item.id === cartItemId);
   const { menus } = useAppSelector((state) => state.Menu);
   const { addonCategories } = useAppSelector((state) => state.AddonCategory);
   const { menuAddonCategories } = useAppSelector(
@@ -19,6 +27,7 @@ const OrderPageMenuDetails = () => {
   );
   const [selectedAddons, setSelectedAddons] = useState<Addon[]>([]);
   const [isDisabled, setIsDisabled] = useState(true);
+  const [quantity, setQuantity] = useState<number>(1);
 
   const menu = menus.find((item) => item.id === menuId);
   const addonCategoryIds = menuAddonCategories
@@ -27,6 +36,17 @@ const OrderPageMenuDetails = () => {
   const filteredAddonCategories = addonCategories.filter((item) =>
     addonCategoryIds.includes(item.id)
   );
+
+  const handleQuantityDecrease = () => {
+    const newQuantity = quantity - 1 === 0 ? 1 : quantity - 1;
+    setQuantity(newQuantity);
+  };
+
+  const handleQuantityIncrease = () => {
+    const newQuantity = quantity + 1;
+    setQuantity(newQuantity);
+  };
+
   useEffect(() => {
     const isRequiredAddonCategories = filteredAddonCategories.filter(
       (item) => item.isRequired
@@ -40,18 +60,40 @@ const OrderPageMenuDetails = () => {
         return addonCategory?.isRequired ? true : false;
       }
     );
+
     const isDisabled =
       isRequiredAddonCategories.length !==
       seletedIsRequiredAddonCategories.length;
     setIsDisabled(isDisabled);
-  }, [selectedAddons]);
+  }, [selectedAddons, addonCategories]);
+
+  useEffect(() => {
+    if (cartItem) {
+      const { addon, quantity } = cartItem;
+      setSelectedAddons(addon);
+      setQuantity(Number(quantity));
+    }
+  }, [cartItem]);
+  const handleAddToCart = () => {
+    if (!menu) return;
+    const newCartItem: cartItem = {
+      id: cartItem ? cartItem.id : nanoid(7),
+      menu,
+      addon: selectedAddons,
+      quantity,
+    };
+    dispatch(addItemtoCart(newCartItem));
+    const pathname = cartItem ? "/order/cart" : "/order";
+    router.push({ pathname, query });
+  };
+
   if (!isReady || !menu) return null;
 
   return (
     <Box>
       <Button
         variant="contained"
-        sx={{ bgcolor: "#40A2E3", width: "fit-content", m: 3 }}
+        sx={{ bgcolor: "#1B9C85", width: "fit-content", m: 3 }}
         onClick={() => {
           router.push(`/order?tableId=${tableId}`);
         }}
@@ -96,14 +138,27 @@ const OrderPageMenuDetails = () => {
         >
           $ {menu.price}
         </Typography>
-        <Box>
+        <Box sx={{}}>
           <AddonCategories
             addonCategories={filteredAddonCategories}
             selectedAddons={selectedAddons}
             setSelectedAddons={setSelectedAddons}
           />
         </Box>
-        <Box sx={{ width: "100%", display: "flex", justifyContent: "center" }}>
+
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <QuantitySelector
+            quantity={quantity}
+            handleQuantityIncrease={handleQuantityIncrease}
+            handleQuantityDecrease={handleQuantityDecrease}
+          />
           <Button
             disabled={isDisabled}
             variant="contained"
@@ -112,8 +167,9 @@ const OrderPageMenuDetails = () => {
               bgcolor: "#0D9276",
               "&:hover": { backgroundColor: "#0D9250" },
             }}
+            onClick={handleAddToCart}
           >
-            Add to Cart
+            {cartItem ? "Update cart" : "Add to cart"}
           </Button>
         </Box>
       </Box>

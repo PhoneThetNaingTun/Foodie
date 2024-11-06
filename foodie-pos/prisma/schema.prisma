@@ -154,6 +154,7 @@ model Order {
   addonId    Int?
   quantity   Int
   orderSeq   String
+  itemId     String
   status     ORDERSTATUS
   totalPrice Int
   tableId    Int

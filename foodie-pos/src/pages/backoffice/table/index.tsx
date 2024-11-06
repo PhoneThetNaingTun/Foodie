@@ -44,7 +44,7 @@ const Table = () => {
           </Button>
         </Box>
       </Box>
-      <Box sx={{ display: "flex", flexWrap: "warp" }}>
+      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
         {tables.map((item) => {
           return (
             <Box

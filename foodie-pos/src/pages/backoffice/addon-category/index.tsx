@@ -61,5 +61,4 @@ const AddonCategory = () => {
     </Box>
   );
 };
-
 export default AddonCategory;
